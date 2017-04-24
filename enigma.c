@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct Enigmas {
+#include "enigma.h"
+
+struct _enigma {
 	char message[100];
 	int rotorOne;
 	int rotorTwo;
@@ -12,46 +14,46 @@ typedef struct Enigmas {
 } Engima;
 
 
-Enigma createEnigma(char name) {
-	Enigma name; 
-	//name.message = "";
-	name.rotorOne = 0;
-	name.rotorTwo = 0; 
-	name.rotorThree = 0; 
-	name.ringstellung = 0; 
-	//name.plugboard = "";
+enigma createEnigma() {
+	enigma e; 
+	enigma.message = "";
+	enigma.rotorOne = 0;
+	enigma.rotorTwo = 0; 
+	enigma.rotorThree = 0; 
+	enigma.ringstellung = 0; 
+	enigma.plugboard = "";
 }
 
-int deleteEnigma(Enigma enigma) {
-	if (!enigma) return -1;
-	free(enigma);
+int deleteEnigma(enigma e) {
+	if (!e) return -1;
+	free(e);
 	return 0; 
 }
 
-int printEnigma(Enigma enigma) {
+int printEnigma(enigma e) {
 	if (!n) return -1; 
-	printf("Message: %s\n", enigma.message);
-	printf("Rotor One: %i\n", enigma.rotorOne);
-	printf("Rotor Two: %i\n", enigma.rotorTwo);
-	printf("Rotor Three: %i\n", enigma.rotorThree);
-	printf("Ringstellung: %i\n", enigma.ringstellung);
-	printf("Plugboard: %s\n", enigma.plugboard);
+	printf("Message: %s\n", e.message);
+	printf("Rotor One: %i\n", e.rotorOne);
+	printf("Rotor Two: %i\n", e.rotorTwo);
+	printf("Rotor Three: %i\n", e.rotorThree);
+	printf("Ringstellung: %i\n", e.ringstellung);
+	printf("Plugboard: %s\n", e.plugboard);
 	return 0; 
 }
 
-void getMessage(Enigma enigma) {
+void getMessage(enigma e) {
 	char c; 
 	while (c != EOF) {
 		scanf("%c", c);
-		strcat(enigma.message, c);
+		strcat(e.message, c);
 	}
 }
 
-void formatMessage(Enigma enigma) {
-	int length = strlen(enigma.message);
+void formatMessage(enigma e) {
+	int length = strlen(e.message);
 	char newMessage[length]; 
 	for (int i = 0; i < length; i++) {
-		char c = enigma.message[i];
+		char c = e.message[i];
 		// If not uppercase (A=65, Z=90)
 		if ( !(c > 64 && c < 91) ) {
 			// If lowercase make uppercase
@@ -62,116 +64,116 @@ void formatMessage(Enigma enigma) {
 		}
 		strcat(newMessage, c);
 	}
-	enigma.message = newMessage;
+	e.message = newMessage;
 
 }
 
-void setPlugboard(Enigma enigma, char plugOption) {
+void setPlugboard(enigma e, char plugOption) {
 	// If user wants default Plugboard instead of entering one
 	if (strcmp(plugOption, "-d") == 0) {
-		enigma.message = "AQ SW DE FR GT HY JU KI LO MP NB VC XZ";
+		e.message = "AQ SW DE FR GT HY JU KI LO MP NB VC XZ";
 	}
 	// User wants to enter their own
 	else if (strcmp(plugOption, "-e") == 0) {
 		printf("Enter each letter once with spaces between the pairs.\n");
 		printf("For example:\nAB CD EF GH...\n");
-		scanf("%s", enigma.message);
+		scanf("%s", e.message);
 	}
 }
 
-char encryptPlugBoardChar(char c) {
+char encryptPlugBoardChar(enigma e, char c) {
 	int returnChar;
-	for (i = 0; i < 39; i++) {
-		if (strcmp(c, enigma.plugboard[i]) == 0) {
-			if (strcmp(enigma.plugboard[i+1] == 32) == 0) {
-				returnChar = enigma.plugboard[i-1]; 
+	for (int i = 0; i < 39; i++) {
+		if (strcmp(c, e.plugboard[i]) == 0) {
+			if (strcmp(e.plugboard[i+1] == 32) == 0) {
+				returnChar = e.plugboard[i-1]; 
 			}
 			else {
-				returnChar = enigma.plugboard[i+1];
+				returnChar = e.plugboard[i+1];
 			}
 		}
 	}
 	return returnChar;
 }
 
-void encryptPlugBoard(Enigma enigma) {
+void encryptPlugBoard(enigma e) {
 	for (int i = 0; i < 39; i++) {
-		char c = enigma.message[i];
-		enigma.message[i] = encryptPlugBoardChar(c);
+		char c = e.message[i];
+		e.message[i] = encryptPlugBoardChar(c);
 		// Print test to see what enigma.message[i] is now; 
-		printf("%c", enigma.message([i]));
+		printf("%c", e.message([i]));
 	}
 }
 
-void setRingstellung();
+void setRingstellung(enigma e);
 
 
-void setRotors(Enigma enigma) {
+void setRotors(enigma e) {
 	printf("\nEnter character for Rotor #1: ");
-	sscanf("%i", enigma.rotorOne);
-	if ( !(enigma.rotorOne > 64 && enigma.rotorOne < 91) ) {
+	sscanf("%i", e.rotorOne);
+	if ( !(e.rotorOne > 64 && e.rotorOne < 91) ) {
 		// If lowercase make uppercase
-		if ( enigma.rotorOne > 96 && enigma.rotorOne < 122 ) {
-			enigma.rotorOne = enigma.rotorOne - 32;
+		if ( e.rotorOne > 96 && e.rotorOne < 122 ) {
+			e.rotorOne = e.rotorOne - 32;
 		}
 		else {
-			printf("Characters in your input are not accepted.\
-				Look at the help menu for a list of characters \
+			printf("Characters in your input are not accepted.
+				Look at the help menu for a list of characters 
 				that are not accepted.\n");
 		}
 	}
 
 	printf("\nEnter character for Rotor #2: ");
-	sscanf("%i", enigma.rotorTwo);
-	if ( !(enigma.rotorTwo > 64 && enigma.rotorTwo < 91) ) {
+	sscanf("%i", e.rotorTwo);
+	if ( !(e.rotorTwo > 64 && e.rotorTwo < 91) ) {
 		// If lowercase make uppercase
-		if ( enigma.rotorTwo > 96 && enigma.rotorTwo < 122 ) {
-			enigma.rotorTwo = enigma.rotorTwo - 32;
+		if ( e.rotorTwo > 96 && e.rotorTwo < 122 ) {
+			e.rotorTwo = e.rotorTwo - 32;
 		}
 		else {
-			printf("Characters in your input are not accepted.\
+			printf("Characters in your input are not accepted.
 				Look at the help menu for a list of characters 
 				that are not accepted.\n");
 		}
 	}
 
 	printf("\nEnter character for Rotor #3: ");
-	sscanf("%i", enigma.rotorThree);
-	if ( !(enigma.rotorThree > 64 && enigma.rotorThree < 91) ) {
+	sscanf("%i", e.rotorThree);
+	if ( !(e.rotorThree > 64 && e.rotorThree < 91) ) {
 		// If lowercase make uppercase
-		if ( enigma.rotorThree > 96 && enigma.rotorThree < 122 ) {
-			enigma.rotorThree = enigma.rotorThree - 32;
+		if ( e.rotorThree > 96 && e.rotorThree < 122 ) {
+			e.rotorThree = e.rotorThree - 32;
 		}
 		else {
-			printf("Characters in your input are not accepted.\
+			printf("Characters in your input are not accepted.
 				Look at the help menu for a list of characters 
 				that are not accepted.\n");
 		}
 	}
 
-	printf("Rotors are: %i, %i, %i \n", enigma.rotorOne, enigma.rotorTwo, enigma.rotorThree);
+	printf("Rotors are: %i, %i, %i \n", e.rotorOne, e.rotorTwo, e.rotorThree);
 
 }
 
-void incrementRotor(Enigma enigma, int number) {
+void incrementRotor(enigma e, int number) {
 	if ( number == 1 ) {
-		enigma.rotorOne = enigma.rotorOne + 1; 
+		e.rotorOne = e.rotorOne + 1; 
 	}
 	if ( number == 2 ) {
-		enigma.rotorTwo = enigma.rotorTwo + 1:
+		e.rotorTwo = e.rotorTwo + 1:
 	}
 	if ( number == 3 ) {
-		enigma.rotorThree = enigma.rotorThree + 1; 
+		e.rotorThree = e.rotorThree + 1; 
 	}
 }
 
-char encryptRotors(Enigma enigma, int number, char c);
+char encryptRotors(enigma e, int number, char c);
 
 void help() {
 	printf("HELP MENU\n\
-		This program allows you to replicate the German WWII Enigma Machine\ 
-		on your computer.  There are three main parts to the Enigma Machine: \ 
-		the Rotors, the Ringstellung, and the Plugboard.\n\
+		This program allows you to replicate the German WWII Enigma Machine 
+		on your computer.  There are three main parts to the Enigma Machine:  
+		the Rotors, the Ringstellung, and the Plugboard.\n
 		");
 
 }
@@ -213,76 +215,76 @@ char menuTwo() {
 }
 */
 
-void encrypt(Enigma enigma) {
-	getMessage(enigma);
-	formatMessage(enigma);
-	setRotors(enigma);
-	setRingstellung(enigma); 
+void encrypt(enigma e) {
+	getMessage(e);
+	formatMessage(e);
+	setRotors(e);
+	setRingstellung(e); 
 
-	encryptPlugBoard(enigma);
+	encryptPlugBoard(e);
 
-	encryptRingstellung(enigma);
+	encryptRingstellung(e);
 
-	int length = strlen(enigma.message);
+	int length = strlen(e.message);
 	// Go through third rotor encryption
 	for (int i = 0; i < length; i++) {
-		incrementRotor(enigma, 3); 
-		char c = encryptRotor(enigma, 3, enigma.message[i]);
-		enigma.message[i] = c;
+		incrementRotor(e, 3); 
+		char c = encryptRotor(e, 3, e.message[i]);
+		e.message[i] = c;
 	}
 
 	// Go through second rotor encryption
 	for (int i = 0; i < length; i++) {
-		incrementRotor(enigma, 2);
-		char c = encryptRotor(enigma, 2, enigma.message[i]);
-		enigma.message[i] = c; 
+		incrementRotor(e, 2);
+		char c = encryptRotor(e, 2, e.message[i]);
+		e.message[i] = c; 
 	}
 
 	// Go through third rotor encryption
 	for (int i = 0; i < length; i++) {
-		incrementRotor(enigma, 1); 
-		char c = encryptRotor(enigma, 1, enigma.message[i]);
-		enigma.message[i] = c; 
+		incrementRotor(e, 1); 
+		char c = encryptRotor(e, 1, e.message[i]);
+		e.message[i] = c; 
 	}
 
 	// Encryption is complete
-	printEnigma(enigma);
+	printEnigma(e);
 
 
 }
 
 void decrypt() {
-	getMessage(enigma);
-	formatMessage(enigma);
-	setRotors(enigma);
-	setRingstellung(enigma);
+	getMessage(e);
+	formatMessage(e);
+	setRotors(e);
+	setRingstellung(e);
 
 	// Go through third rotor encryption
 	for (int i = 0; i < length; i++) {
-		incrementRotor(enigma, 1); 
-		char c = encryptRotor(enigma, 1, enigma.message[i]);
-		enigma.message[i] = c; 
+		incrementRotor(e, 1); 
+		char c = encryptRotor(e, 1, e.message[i]);
+		e.message[i] = c; 
 	}
 
 	// Go through second rotor encryption
 	for (int i = 0; i < length; i++) {
-		incrementRotor(enigma, 2);
-		char c = encryptRotor(enigma, 2, enigma.message[i]);
-		enigma.message[i] = c; 
+		incrementRotor(e, 2);
+		char c = encryptRotor(e, 2, e.message[i]);
+		e.message[i] = c; 
 	}
 
-	encryptRingstellung(enigma);
+	encryptRingstellung(e);
 
-	int length = strlen(enigma.message);
+	int length = strlen(e.message);
 	// Go through third rotor encryption
 	for (int i = 0; i < length; i++) {
-		incrementRotor(enigma, 3); 
-		char c = encryptRotor(enigma, 3, enigma.message[i]);
-		enigma.message[i] = c;
+		incrementRotor(e, 3); 
+		char c = encryptRotor(e, 3, e.message[i]);
+		e.message[i] = c;
 	}
 
-	encryptPlugBoard(enigma);
+	encryptPlugBoard(e);
 
 	// Decryption is complete
-	printEnigma(enigma);
+	printEnigma(e);
 }
