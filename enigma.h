@@ -5,9 +5,13 @@
 	Authors: Jack Danielski and Thomas Wintenburg
 */
 
+#ifndef ENIGMA_H
+#define ENIGMA_H
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "enigma.c"
 
 
 /* 
@@ -16,53 +20,53 @@
 *
 */
 
-typedef struct Enigmas; 
+typedef struct _enigma enigma; 
 
-// Creates an Enigma type with name "name"
-Engima createEnigma(char name);
+// Creates an Enigma type
+engima createEnigma();
 
 // Delete an Enigma type
 // Returns -1 if Enigma n DNE
 // Returns 0 is successful
-int deleteEnigma(Enigma n); 
+int deleteEnigma(enigma e); 
 
 // Print the values of Enigma n
 // Returns -1 if Enigma n DNE
 // Returns 0 if successful 
-int printEnigma(Enigma n);
+int printEnigma(enigma e);
 
 // Set enigma.message 
-void getMessage(Enigma enigma);
+void getMessage(enigma e);
 
 // Get rid of spaces and punctuation 
 // Capitalize lowercase letters
-void formatMessage(Enigma enigma);
+void formatMessage(enigma e);
 
 // Set enigma.plugboard
-void setPlugboard(Enigma enigma, char plugOption);
+void setPlugboard(enigma e, char plugOption);
 
 // Encrypts a letter according to its paired 
 // value on the Plugboard
-char encryptPlugboardChar(char c);
+char encryptPlugboardChar(enigma e, char c);
 
 // Encrypt according to the plugboard
 // using encryptPlugBoardChar function
-void encryptPlugboard(Enigma enigma);
+void encryptPlugboard(enigma e);
 
 // Set enigma.ringstellung
-void setRingstellung(Engima enigma); 
+void setRingstellung(enigma e); 
 
 // Encrypt message according to ringstellung 
-void encryptRingstellung(Enigma enigma);
+void encryptRingstellung(enigma e);
 
 // Set rotors in enigma 
-void setRotors(Enigma enigma);
+void setRotors(enigma e);
 
 // Increment the proper rotors
-void incrementRotor(Enigma enigma, int number);
+void incrementRotor(enigma e, int number);
 
 // Encrypt a character according to the first rotor
-char encryptRotor(Enigma enigma, int number, char c);
+char encryptRotor(enigma e, int number, char c);
 
 // Display help menu
 void help();
@@ -79,14 +83,4 @@ void encrypt();
 // Sets off the process ot decrypt
 void decrypt();
 
-/*
-void encrypt() {
-	printf("Encrypt was choses\n");
-	setRotors();
-}
-
-void decrypt() {
-	printf("Decrypt was chosen\n");
-	setRotors();
-}
-*/
+#endif 
