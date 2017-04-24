@@ -4,7 +4,7 @@
 #include <string.h>
 
 int main() {
-	createEnigma("enigma"); 
+	createEnigma(); 
 	char choice[2] = menuOne();
 	char plugOption[2];
 
@@ -42,7 +42,7 @@ int main() {
 		menuOne();
 	}
 
-
+	deleteEnigma(enigma);
 	
 	return 0;
 }
