@@ -1,48 +1,52 @@
+/*
+
+	Author: Jack Danielski
+
+*/
+
 #include "enigma.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+
+/*
+
+	Encryption Process:
+	--Plugboard
+	--Rotors
+	--Ringstellung
+
+*/
+
 int main() {
-	createEnigma(); 
-	char choice[2] = menuOne();
-	char plugOption[2];
 
-	printf("Enter an option for the Plugboard settings:\n");
-	printf("Default Values: -d\nOwn Values: -e\n");
-	printf("Enter an option:\n");
-	scanf("%s", plugOption);
-
-	setPlugboard(enigma, plugOption);
-	setRotors(enigma);
+  char finalMsg[100];
+  char message[100];
+  char ringstellung;
+  char rotorsOne;
+  char rotorsTwo;
+  char rotorsThree;
+  char plugboard[40] = "AQ SW DE FR GT HY JU KI LO MP NB VC XZ";
+  char plugOption[3];
 
 
-	// Print tests to see what is held inside these variables
-	printf("Choice: %s\n", choice);
-	printf("PlugOption: %s\n",plugOption);
+  getMessage(message);
+  //formatMessage(message);
 
+  printf("Enter -d for default or -e for personal plugboard\n");
+  scanf("%2s", plugOption);
+  setPlugboard(plugOption, plugboard);
 
-	/******************************************************
-	
-	After getting the plugboard settings and gettting a
-	message to encrypt/decrypt, start encrypting/decrypting
+  setRingstellung(&ringstellung);
+  setRotors(&rotorsOne, &rotorsTwo, &rotorsThree);
 
-	*******************************************************/
-	if ( strcmp(choice,"-e") == 0 ) {
-		encrypt();
-	}
-	else if ( strcmp(choice, "-d") == 0) {
-		decrypt(); 
-	}
-	else if ( strcmp(choice,"-h") == 0) {
-		help();
-	}
-	else {
-		printf("Not a valid choice. Try again\n");
-		menuOne();
-	}
+  // Encryption process
+  encryptPlugboard(message, finalMsg, plugboard);
+  encryptRingstellung(finalMsg, &ringstellung);
+  encryptRotors(finalMsg, &rotorsOne, &rotorsTwo, &rotorsThree);
 
-	deleteEnigma(enigma);
-	
-	return 0;
+  printf("Original Message:\n%s\n", message);
+
+  return 0;
 }
