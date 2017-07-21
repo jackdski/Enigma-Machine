@@ -1,10 +1,10 @@
 CC = gcc
-CFLAGS = -WALL -WEXTRA -std=c99 -pedantic -g 
+CFLAGS = -Wall -Wextra -std=c99 -pedantic -g 
 
 PROG = main
-SRC = main.c engima.c
+SRC = main.c enigma.c
 HDR = enigma.h
-OBJ = $(SRC:.c=.0)
+OBJ = $(SRC:.c=.o)
 
 $(PROG): $(OBJ)
 $(OBJ): $(HDR)
