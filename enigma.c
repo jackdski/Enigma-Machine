@@ -1,290 +1,242 @@
+/*
+
+	Author: Jack Danielski
+
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "enigma.h"
 
-struct _enigma {
-	char message[100];
-	int rotorOne;
-	int rotorTwo;
-	int rotorThree;
-	int ringstellung;
-	char plugboard[39]; // 26 letters plus 13 spaces
-} Engima;
 
-
-enigma createEnigma() {
-	enigma e; 
-	enigma.message = "";
-	enigma.rotorOne = 0;
-	enigma.rotorTwo = 0; 
-	enigma.rotorThree = 0; 
-	enigma.ringstellung = 0; 
-	enigma.plugboard = "";
+void getMessage(char * message) {
+	//char message[100];
+	printf("Enter your message in ALL CAPS and NO SPACES:\n");
+	scanf("%99s", message);
+	printf("%s\n", message );
 }
 
-int deleteEnigma(enigma e) {
-	if (!e) return -1;
-	free(e);
-	return 0; 
-}
 
-int printEnigma(enigma e) {
-	if (!n) return -1; 
-	printf("Message: %s\n", e.message);
-	printf("Rotor One: %i\n", e.rotorOne);
-	printf("Rotor Two: %i\n", e.rotorTwo);
-	printf("Rotor Three: %i\n", e.rotorThree);
-	printf("Ringstellung: %i\n", e.ringstellung);
-	printf("Plugboard: %s\n", e.plugboard);
-	return 0; 
-}
-
-void getMessage(enigma e) {
-	char c; 
-	while (c != EOF) {
-		scanf("%c", c);
-		strcat(e.message, c);
-	}
-}
-
-void formatMessage(enigma e) {
-	int length = strlen(e.message);
-	char newMessage[length]; 
+void formatMessage(char * message) {
+	int length = strlen(message);
+	char newMessage[length];
 	for (int i = 0; i < length; i++) {
-		char c = e.message[i];
+		char c = message[i];
 		// If not uppercase (A=65, Z=90)
-		if ( !(c > 64 && c < 91) ) {
+		if ( !(c > 'A' && c < 'Z') ) {
 			// If lowercase make uppercase
 			// a = 97, z=122
-			if ( c > 96 && c < 123 ) {
+			if ( c > 'a' && c < 'z' ) {
 				c = c - 32;
 			}
 		}
-		strcat(newMessage, c);
-	}
-	e.message = newMessage;
 
+	}
+	message = newMessage;
 }
 
-void setPlugboard(enigma e, char plugOption) {
-	// If user wants default Plugboard instead of entering one
+
+void setPlugboard(char * plugOption, char * plugboard) {
 	if (strcmp(plugOption, "-d") == 0) {
-		e.message = "AQ SW DE FR GT HY JU KI LO MP NB VC XZ";
+		plugboard = "AQ SW DE FR GT HY JU KI LO MP NB VC XZ";
 	}
+	// If user wants default Plugboard instead of entering one
+	//else (strcmp(plugOption, "-e") == 0) {
+	//	plugboard = "nothing";
+	//}
 	// User wants to enter their own
-	else if (strcmp(plugOption, "-e") == 0) {
-		printf("Enter each letter once with spaces between the pairs.\n");
-		printf("For example:\nAB CD EF GH...\n");
-		scanf("%s", e.message);
-	}
+	//else {
+	//	printf("Enter each letter once with spaces between the pairs.\n");
+	//	printf("For example:\nAB CD EF GH...\n");
+	//	scanf("%s", plugboard);
+	//}
+	printf("Plugboard: %s\n", plugboard);
 }
 
-char encryptPlugBoardChar(enigma e, char c) {
-	int returnChar;
-	for (int i = 0; i < 39; i++) {
-		if (strcmp(c, e.plugboard[i]) == 0) {
-			if (strcmp(e.plugboard[i+1] == 32) == 0) {
-				returnChar = e.plugboard[i-1]; 
+
+char encryptPlugBoardChar(char c, char * plugboard) {
+	char returnChar;
+	for (int i = 0; i < 40; i++) {
+		if ( c == plugboard[i]) {
+			if (plugboard[i+1] == 32) {
+				returnChar = plugboard[i-1];
 			}
 			else {
-				returnChar = e.plugboard[i+1];
+				returnChar = plugboard[i+1];
 			}
 		}
 	}
 	return returnChar;
 }
 
-void encryptPlugBoard(enigma e) {
-	for (int i = 0; i < 39; i++) {
-		char c = e.message[i];
-		e.message[i] = encryptPlugBoardChar(c);
-		// Print test to see what enigma.message[i] is now; 
-		printf("%c", e.message([i]));
+
+void encryptPlugboard(char * message, char * finalMsg, char * plugboard) {
+	for (int i = 0; message[i]; i++) {
+		char newChar;
+		char c = message[i];
+		printf("%c\n",c);
+		for (int j = 0; plugboard[j]; j++) {
+			if (c == plugboard[j]) {
+				if (plugboard[j+1] == 32) {
+					newChar = plugboard[j-1];
+					printf("%c\n", newChar);
+				}
+				else {
+					newChar = plugboard[j+1];
+					printf("%c\n", newChar);
+				}
+			}
+		}
+		printf("Num: %i, New Char: %c\n", i, newChar);
+		finalMsg[i] = newChar;
 	}
+	printf("After Plugboard Encryption:\n");
+	printf("%s\n", finalMsg);
 }
 
-void setRingstellung(enigma e);
+void setRingstellung(char * ringstellung){
+	printf("Set a value for the ringstellung (A-Z):\n");
+	scanf("%1s", ringstellung);
 
+	if ( *ringstellung > 'a' && *ringstellung < 'z' ) {
+		*ringstellung -=  32;
+	}
 
-void setRotors(enigma e) {
-	printf("\nEnter character for Rotor #1: ");
-	sscanf("%i", e.rotorOne);
-	if ( !(e.rotorOne > 64 && e.rotorOne < 91) ) {
+	printf("Ringstellung: %c\n", *ringstellung);
+}
+
+void encryptRingstellung(char * finalMsg, char * ringstellung) {
+	int length = strlen(finalMsg);
+	printf("Length: %d\n", length);
+	char ringVal = *ringstellung - 'A';
+	if (ringVal > 'Z') {
+		ringVal = (ringVal - 'Z') + 'A' - 1;
+	}
+	printf("RingVal: %d\n", ringVal );
+
+	for (int i = 0; i < length; i++) {
+		finalMsg[i] = finalMsg[i] + ringVal;
+		if (finalMsg[i] > 'Z') {
+			finalMsg[i] = ( finalMsg[i] - 'Z' ) + 'A' - 1;
+		}
+		printf("%c\n", finalMsg[i]);
+	}
+	printf("After Ringstellung: %s\n", finalMsg);
+
+}
+
+void setRotors(char * rotorsOne, char * rotorsTwo, char * rotorsThree) {
+	printf("Enter character for Rotor #1 (A-Z):\n");
+	scanf("%1s", rotorsOne);
+	if ( !(*rotorsOne >= 'A' && *rotorsOne <= 'Z') ) {
 		// If lowercase make uppercase
-		if ( e.rotorOne > 96 && e.rotorOne < 122 ) {
-			e.rotorOne = e.rotorOne - 32;
+		if ( *rotorsOne >= 'a' && *rotorsOne <= 'z' ) {
+			*rotorsOne = *rotorsOne - 32;
 		}
 		else {
-			printf("Characters in your input are not accepted.
-				Look at the help menu for a list of characters 
-				that are not accepted.\n");
+			printf("Characters in your input are not accepted.\n");
+			printf("Look at the help menu for a list of characters\n");
+			printf("that are not accepted.\n");
 		}
 	}
 
-	printf("\nEnter character for Rotor #2: ");
-	sscanf("%i", e.rotorTwo);
-	if ( !(e.rotorTwo > 64 && e.rotorTwo < 91) ) {
+	printf("Enter character for Rotor #2 (A-Z):\n");
+	scanf("%1s", rotorsTwo);
+	//rotors[1] = temp[0];
+	if ( !(*rotorsTwo >= 'A' && *rotorsTwo <= 'Z') ) {
 		// If lowercase make uppercase
-		if ( e.rotorTwo > 96 && e.rotorTwo < 122 ) {
-			e.rotorTwo = e.rotorTwo - 32;
+		if ( *rotorsTwo>= 'a' && *rotorsTwo <= 'z' ) {
+			*rotorsTwo = *rotorsTwo - 32;
 		}
 		else {
-			printf("Characters in your input are not accepted.
-				Look at the help menu for a list of characters 
-				that are not accepted.\n");
+			printf("Characters in your input are not accepted.\n");
+			printf("Look at the help menu for a list of characters\n");
+			printf("that are not accepted.\n");
 		}
 	}
+	//printf("\n");
 
-	printf("\nEnter character for Rotor #3: ");
-	sscanf("%i", e.rotorThree);
-	if ( !(e.rotorThree > 64 && e.rotorThree < 91) ) {
+	printf("Enter character for Rotor #3 (A-Z): \n");
+	scanf("%1s", rotorsThree);
+	//rotors[2] = temp[0];
+	if ( !(*rotorsThree >= 'A' && *rotorsThree <= 'Z') ) {
 		// If lowercase make uppercase
-		if ( e.rotorThree > 96 && e.rotorThree < 122 ) {
-			e.rotorThree = e.rotorThree - 32;
+		if ( *rotorsThree >= 'a' && *rotorsThree <= 'z' ) {
+			*rotorsThree = *rotorsThree - 32;
 		}
 		else {
-			printf("Characters in your input are not accepted.
-				Look at the help menu for a list of characters 
-				that are not accepted.\n");
+			printf("Characters in your input are not accepted.\n");
+			printf("Look at the help menu for a list of characters\n");
+			printf("that are not accepted.\n");
+		}
+	}
+	printf("Rotors are: %c, %c, %c \n", *rotorsOne, *rotorsTwo, *rotorsThree);
+}
+
+
+void encryptRotors( char * finalMsg, char * rotorsOne, char * rotorsTwo, char * rotorsThree) {
+	int length = strlen(finalMsg);
+	printf("Length: %d\n", length);
+	char newLet;
+
+
+	// do encryption
+	for (int i = 0; i < length; i++) {
+		// letValOne
+		char letValOne = *rotorsOne - 'A';
+		if (letValOne > 'Z') {
+			letValOne = (letValOne - 'Z') + 'A' - 1;
+		}
+		printf("letValOne: %d\n", letValOne);
+
+		// letValTwo
+		char letValTwo = *rotorsTwo - 'A';
+		if (letValTwo > 'Z') {
+			letValTwo = (letValTwo - 'Z') + 'A' - 1;
+		}
+		printf("letValTwo: %d\n",letValTwo);
+
+		// letValThree
+		char letValThree = *rotorsThree - 'A';
+		if (letValThree > 'Z') {
+			letValOne = (letValThree - 'Z') + 'A' - 1;
+		}
+		printf("letValThree: %d\n",letValThree);
+
+
+		newLet = finalMsg[i] + letValOne;
+		if (newLet > 'Z') {
+			newLet = ( newLet - 'Z' ) + 'A' - 1;
+		}
+
+		newLet += letValTwo;
+		if (newLet > 'Z') {
+			newLet = ( newLet - 'Z' ) + 'A' -1;
+		}
+
+		newLet = newLet + letValThree;
+		if (newLet > 'Z') {
+			newLet = ( newLet - 'Z' ) + 'A' -1;
+		}
+
+		printf("Newlet: %c\n", newLet);
+		// Set the place equal to the new value
+		finalMsg[i] = newLet;
+
+		// Increment rotor one after every letter
+		*rotorsOne = *rotorsOne + 1;
+		if (*rotorsOne > 'Z') {
+			*rotorsOne = (*rotorsOne - 'Z') + 'A' - 1;
+		}
+		printf("New Rotor1: %d\n", *rotorsOne);
+
+		// Increment rotor two after every 26'th letter
+		if ((i % 26) == 0 ) {
+			rotorsTwo++;
 		}
 	}
 
-	printf("Rotors are: %i, %i, %i \n", e.rotorOne, e.rotorTwo, e.rotorThree);
-
-}
-
-void incrementRotor(enigma e, int number) {
-	if ( number == 1 ) {
-		e.rotorOne = e.rotorOne + 1; 
-	}
-	if ( number == 2 ) {
-		e.rotorTwo = e.rotorTwo + 1:
-	}
-	if ( number == 3 ) {
-		e.rotorThree = e.rotorThree + 1; 
-	}
-}
-
-char encryptRotors(enigma e, int number, char c);
-
-void help() {
-	printf("HELP MENU\n\
-		This program allows you to replicate the German WWII Enigma Machine 
-		on your computer.  There are three main parts to the Enigma Machine:  
-		the Rotors, the Ringstellung, and the Plugboard.\n
-		");
-
-}
-
-char menuOne() {
-	char option[2];
-
-	printf("Choose to encrypt, decrypt, or see help menu:\n");
-	printf("
-		Encryption: -e\n
-		Decryption: -d\n
-		Help: -h\n
-		Enter an option: 
-		");
-
-	scanf("%s", option);
-	// Prints the option chosen as a test
-	//printf("%s\n", option);
-
-	return option;
-}
-
-// Optional 
-/*
-char menuTwo() {
-	char option[2];
-	printf("Choose an option:\n\
-		-h -> help menu and how the Enigma Machine works\n\
-		-e -> encrypt a message\n\
-		-d -> decrypt a message\n\
-		-t -> enter text via a file from the same directory\
-		 as the program\n\
-		-k -> enter text from stdin/keyboard\n\
-		-r -> modify rotor characters\n\
-		-rs -> modify Ringstellung number/character\n\
-		-p -> modify plugboard settings\n\
-		");
-	return option;
-}
-*/
-
-void encrypt(enigma e) {
-	getMessage(e);
-	formatMessage(e);
-	setRotors(e);
-	setRingstellung(e); 
-
-	encryptPlugBoard(e);
-
-	encryptRingstellung(e);
-
-	int length = strlen(e.message);
-	// Go through third rotor encryption
-	for (int i = 0; i < length; i++) {
-		incrementRotor(e, 3); 
-		char c = encryptRotor(e, 3, e.message[i]);
-		e.message[i] = c;
-	}
-
-	// Go through second rotor encryption
-	for (int i = 0; i < length; i++) {
-		incrementRotor(e, 2);
-		char c = encryptRotor(e, 2, e.message[i]);
-		e.message[i] = c; 
-	}
-
-	// Go through third rotor encryption
-	for (int i = 0; i < length; i++) {
-		incrementRotor(e, 1); 
-		char c = encryptRotor(e, 1, e.message[i]);
-		e.message[i] = c; 
-	}
-
-	// Encryption is complete
-	printEnigma(e);
-
-
-}
-
-void decrypt() {
-	getMessage(e);
-	formatMessage(e);
-	setRotors(e);
-	setRingstellung(e);
-
-	// Go through third rotor encryption
-	for (int i = 0; i < length; i++) {
-		incrementRotor(e, 1); 
-		char c = encryptRotor(e, 1, e.message[i]);
-		e.message[i] = c; 
-	}
-
-	// Go through second rotor encryption
-	for (int i = 0; i < length; i++) {
-		incrementRotor(e, 2);
-		char c = encryptRotor(e, 2, e.message[i]);
-		e.message[i] = c; 
-	}
-
-	encryptRingstellung(e);
-
-	int length = strlen(e.message);
-	// Go through third rotor encryption
-	for (int i = 0; i < length; i++) {
-		incrementRotor(e, 3); 
-		char c = encryptRotor(e, 3, e.message[i]);
-		e.message[i] = c;
-	}
-
-	encryptPlugBoard(e);
-
-	// Decryption is complete
-	printEnigma(e);
+	printf("New Message:\n%s\n", finalMsg);
 }
