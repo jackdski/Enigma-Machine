@@ -1,3 +1,3 @@
 # enigma
 
-ECEN 1310 Enigma Machine Final Project.
+World War II German Engima Encryption Machine
